@@ -6,4 +6,4 @@ vendor
 *~
 .ipynb_checkpoints
 data
-\#.*\#
+\#*\#
