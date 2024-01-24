@@ -7,3 +7,5 @@ vendor
 .ipynb_checkpoints
 data
 \#*\#
+**/__pycache__/
+**/.DS_Store

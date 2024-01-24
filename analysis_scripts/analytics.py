@@ -75,10 +75,14 @@ For the first two weeks of January 2024
     for modality in modalities :
     
         risData = pd.read_csv(csv_path, low_memory=False, parse_dates=True, dayfirst=True)
-        risData = risData.drop_duplicates(subset=["Accession No"])
-        risData = risData[risData['Is Addendum Report'] == 'No']
-        risData = risData[risData['Visit Type'] == 'In Patient']
-        risData = risData[risData['Modality'] == modality]
+        if "Accession No" in risData.columns:
+            risData = risData.drop_duplicates(subset=["Accession No"])
+        if "Is Addendum Report" in risData.columns:
+            risData = risData[risData['Is Addendum Report'] == 'No']
+        if "Visit Type" in risData.columns:
+            risData = risData[risData['Visit Type'] == 'In Patient']
+        if "Modality" in risData.columns:
+            risData = risData[risData['Modality'] == modality]
 
         risData['IP within 1 day'] = ''
         risData['IP report within 4h'] = ''
@@ -86,15 +90,15 @@ For the first two weeks of January 2024
         for idx, row in risData.iterrows() :
             less_than_day = within_time_interval(row['Authorised Date'], row['Requested Date'], 1.0)
             if less_than_day :
-                risData['IP within 1 day'].loc[idx] = 'Within 1 day'
+                risData.loc[idx,'IP within 1 day'] = 'Within 1 day'
             else :
-                risData['IP within 1 day'].loc[idx] = 'Exceeded 1 day'
+                risData.loc[idx, 'IP within 1 day'] = 'Exceeded 1 day'
             
             rep_less_than_4h = within_time_interval(row['Authorised Date'], row['Completed Date'], 4.0/24)
             if rep_less_than_4h :
-                risData['IP report within 4h'].loc[idx] = 'Within 4h'
+                risData.loc[idx,'IP report within 4h'] = 'Within 4h'
             else :
-                risData['IP report within 4h'].loc[idx] = 'Exceeded 4h'
+                risData.loc[idx,'IP report within 4h'] = 'Exceeded 4h'
 
 
         value_counts = risData['IP within 1 day'].value_counts()
